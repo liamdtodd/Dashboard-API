@@ -1,0 +1,23 @@
+{
+  "name": "dashboard-api",
+  "version": "1.0.0",
+  "description": "service as intermediary between client and database",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/liamdtodd/Dashboard-API.git"
+  },
+  "author": "Liam Todd",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/liamdtodd/Dashboard-API/issues"
+  },
+  "homepage": "https://github.com/liamdtodd/Dashboard-API#readme",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
