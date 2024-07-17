@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/liamdtodd/Dashboard-API#readme",
   "dependencies": {
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "firebase-admin": "^12.2.0"
   }
 }
