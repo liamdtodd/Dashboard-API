@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/liamdtodd/Dashboard-API#readme",
   "dependencies": {
+    "@google-cloud/datastore": "^9.1.0",
+    "body-parser": "^1.20.2",
     "express": "^4.19.2",
     "firebase-admin": "^12.2.0"
   }
