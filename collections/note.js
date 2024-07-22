@@ -9,13 +9,13 @@ const JSON = 'application/json';
 
 router.use(bodyParser.json());
 
-function post_note(title, content, uid) {
+function post_note(title, content) {
     var key = datastore.key(NOTE);
     const self_url = 'http://localhost:8080/note/' + key.id;
     const data = {
         "title": title,
         "content": content,
-        "user_id": uid,
+        "user_id": null,
         "self": self_url
     }
 
@@ -44,14 +44,14 @@ router.post('/', (req, res) => {
     if (req.get('content-type') !== JSON)
         res.status(415).json({ 'Error': 'Server only accepts application/json data' });
     else {
-        if (req.body.title && req.body.content && req.body.user_id) {
-            post_note(req.body.title, req.body.content, req.body.user_id)
+        if (req.body.title && req.body.content) {
+            post_note(req.body.title, req.body.content)
                 .then(key => {
                     res.status(201).json({
                         "id": key.id,
                         "title": req.body.title,
                         "content": req.body.content,
-                        "user_id": req.body.user_id,
+                        "user_id": null,
                         "self": req.protocol + '://' + req.get('host') + '/note/' + key.id
                     });
                 });

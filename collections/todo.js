@@ -9,13 +9,13 @@ const JSON = 'application/json';
 
 router.use(bodyParser.json());
 
-function post_todo(name, content, uid) {
+function post_todo(name, content) {
     var key = datastore.key(TODO);
     const self_url = 'http://localhost:8080/todo/' + key.id;
     const data = {
         'name': name,
         'content': content,
-        'user_id': uid,
+        'user_id': null,
         'self': self_url
     }
 
@@ -44,14 +44,14 @@ router.post('/', (req, res) => {
     if (req.get('content-type') !== JSON)
         res.status(415).json({ 'Error': 'Server only accepts application/json data' });
     else {
-        if (req.body.name && req.body.content && req.body.user_id) {
-            post_todo(req.body.name, req.body.content, req.body.user_id)
+        if (req.body.name && req.body.content) {
+            post_todo(req.body.name, req.body.content)
                 .then(key => {
                     res.status(201).json({
                         "id": key.id,
                         "name": req.body.name,
                         "content": req.body.content,
-                        "user_id": req.body.user_id,
+                        "user_id": null,
                         "self": req.protocol + '://' + req.get('host') + '/todo/' + key.id
                     });
                 });

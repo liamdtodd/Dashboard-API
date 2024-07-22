@@ -4,18 +4,18 @@ const ds = require('../datastore/datastore');
 const datastore = ds.datastore;
 const router = express.Router();
 
-const EVENT = 'Event';
+const EVENT = 'EVENT';
 const JSON = 'application/json';
 
 router.use(bodyParser.json());
 
-function post_event(name, date, uid) {
+function post_event(name, date) {
     var key = datastore.key(EVENT);
     const self_url = 'http://localhost:8080/calendar/' + key.id;
     const data = {
         "name": name,
         "date": date,
-        "user_id": uid,
+        "user_id": null,
         "self": self_url
     }
 
@@ -44,14 +44,14 @@ router.post('/', (req, res) => {
     if (req.get('content-type') !== JSON)
         res.status(415).json({ 'Error': 'Server only accepts application/json data' });
     else {
-        if (req.body.name && req.body.date && req.body.user_id) {
-            post_event(req.body.name, req.body.date, req.body.user_id)
+        if (req.body.name && req.body.date) {
+            post_event(req.body.name, req.body.date)
                 .then(key => {
                     res.status(201).json({
                         "id": key.id,
                         "name": req.body.name,
                         "date": req.body.date,
-                        "user_id": req.body.user_id,
+                        "user_id": null,
                         "self": req.protocol + '://' + req.get('host') + '/calendar/' + key.id
                     });
                 });
