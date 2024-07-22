@@ -5,6 +5,9 @@ const datastore = ds.datastore;
 const router = express.Router();
 
 const USER = 'USER';
+const EVENT = 'EVENT';
+const TODO = 'TODO';
+const NOTE = 'NOTE';
 const JSON = 'application/json';
 
 router.use(bodyParser.json());
@@ -35,6 +38,45 @@ function get_user(id) {
         else
             return user.map(ds.fromDatastore);
     });
+}
+
+function patch_user_event(uid, eid, user, event) {
+    const key = datastore.key([USER, parseInt(uid, 10)]);
+    event.self = 'http://localhost:8080/event/' + eid;
+    event.user_id = uid;
+    user.events.push(event);
+
+    const updated_user = {
+        'id': uid,
+        'name': user.name,
+        'email': user.email,
+        'events': user.events,
+        'notes': user.notes,
+        'todos': user.todos,
+        'self': user.self
+    }
+    patch_event(uid, eid);
+    return datastore.save({ 'key': key, 'data': updated_user });
+}
+
+function get_event(id) {
+    const key = datastore.key([EVENT, parseInt(id, 10)]);
+    return datastore.get(key).then((event) => {
+        if (event[0] === undefined || event[0] === null) 
+            return event;
+        else
+            return event.map(ds.fromDatastore);
+    });
+}
+
+function patch_event(uid, eid) {
+    const key = datastore.key([EVENT, parseInt(eid, 10)]);
+    const event_url = 'http://localhost:8080/event/' + key.id;
+    const event = {
+        'user_id': uid,
+        'self': event_url
+    }
+    return datastore.save({ 'key': key, 'data': event })
 }
 
 function delete_user(id) {
@@ -87,6 +129,35 @@ router.get('/:id', (req, res) => {
                 }
             }
         });
+});
+
+router.patch('/:uid/calendar/:eid', (req, res) => {
+    if (req.get('content-type') !== JSON)
+        res.status(415).json({ 'Error': 'Server only accepts application/json data' });
+    else {
+        get_user(req.params.uid)
+            .then(user => {
+                if (user[0] === undefined || user[0] === null)
+                    res.status(404).json({ 'Error': 'No user with that user ID exists' });
+                else {
+                    get_event(req.params.eid)
+                        .then(event => {
+                            if (event[0] === undefined || event[0] === null)
+                                res.status(404).json({ 'Error': 'No event with that event ID exists' });
+                            else if (event[0].user_id !== null && event[0].user_id !== undefined)
+                                res.status(403).json({ 'Error': 'This event already belongs to a user' });
+                            else {
+                                patch_user_event(req.params.uid, req.params.eid, user[0], event[0]);
+                                res.status(200).json({
+                                    'id': req.params.uid,
+                                    'events': event[0],
+                                    'self': req.protocol + '://' + req.get('host') + '/user/' + req.params.uid
+                                });
+                            }
+                        });
+                }
+            });
+    }
 });
 
 router.delete('/:id', (req, res) => {
