@@ -1,4 +1,4 @@
-const ds = require("../datastore/datastore");
+const ds = require("../../datastore/datastore");
 const datastore = ds.datastore;
 
 const USER = 'USER';
