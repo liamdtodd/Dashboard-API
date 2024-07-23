@@ -1,14 +1,11 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const ds = require('../datastore/datastore');
-const datastore = ds.datastore;
 const router = express.Router();
 
 const { get_todo } = require('../methods/get');
 const { post_todo } = require('../methods/post');
 const { delete_todo } = require('../methods/delete');
 
-const TODO = 'TODO';
 const JSON = 'application/json';
 
 router.use(bodyParser.json());
