@@ -6,6 +6,7 @@ const { get_event, get_note, get_todo, get_user } = require('../methods/get');
 const { post_user } = require('../methods/post');
 const { delete_user } = require('../methods/delete');
 const { patch_user_event, patch_user_note, patch_user_todo } = require('../methods/user/patch');
+const { delete_user_event, delete_user_note, delete_user_todo } = require('../methods/user/delete');
 
 const JSON = 'application/json';
 
@@ -141,6 +142,75 @@ router.delete('/:id', (req, res) => {
             else {
                 delete_user(req.params.id);
                 res.status(204).end();
+            }
+        });
+});
+
+router.delete('/:uid/calendar/:eid', (req, res) => {
+    get_user(req.params.uid)
+        .then(user => {
+            if (user[0] === undefined || user[0] === null)
+                res.status(404).json({ 'Error': 'User with this user ID does not exist' });
+            else if (user[0].events == [])
+                res.status(403).json({ 'Error': 'User does not have any events to delete' });
+            else {
+                get_event(req.params.eid)
+                    .then(event => {
+                        if (event[0] === undefined || event[0] === null)
+                            res.status(404).json({ 'Error': 'Event with this event ID does not exist' });
+                        else if (event[0].user_id != req.params.uid)
+                            res.status(403).json({ 'Error': 'Event does not belong to this user' });
+                        else {
+                            delete_user_event(req.params.uid, req.params.eid, user[0]);
+                            res.status(204).end();
+                        }
+                    });
+            }
+        });
+});
+
+router.delete('/:uid/note/:nid', (req, res) => {
+    get_user(req.params.uid)
+        .then(user => {
+            if (user[0] === undefined || user[0] === null)
+                res.status(404).json({ 'Error': 'User with this user ID does not exist' });
+            else if (user[0].notes == [])
+                res.status(403).json({ 'Error': 'User does not have any notes to delete' });
+            else {
+                get_note(req.params.nid)
+                    .then(note => {
+                        if (note[0] === undefined || note[0] === null)
+                            res.status(404).json({ 'Error': 'Note with this note ID does not exist' });
+                        else if (note[0].user_id != req.params.uid)
+                            res.status(403).json({ 'Error': 'Note does not belong to this user' });
+                        else {
+                            delete_user_note(req.params.uid, req.params.nid, user[0]);
+                            res.status(204).end();
+                        }
+                    });
+            }
+        });
+});
+
+router.delete('/:uid/todo/:tid', (req, res) => {
+    get_user(req.params.uid)
+        .then(user => {
+            if (user[0] === undefined || user[0] === null)
+                res.status(404).json({ 'Error': 'User with this user ID does not exist' });
+            else if (user[0].todos == [])
+                res.status(403).json({ 'Error': 'User does not have any todos to delete' });
+            else {
+                get_todo(req.params.tid)
+                    .then(todo => {
+                        if (todo[0] === undefined || todo[0] === null)
+                            res.status(404).json({ 'Error': 'Todo with this todo ID does not exist' });
+                        else if (todo[0].user_id != req.params.uid)
+                            res.status(403).json({ 'Error': 'Todo does not belong to this user' });
+                        else {
+                            delete_user_todo(req.params.uid, req.params.tid, user[0]);
+                            res.status(204).end();
+                        }
+                    });
             }
         });
 });
