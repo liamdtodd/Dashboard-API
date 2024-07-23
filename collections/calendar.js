@@ -4,41 +4,14 @@ const ds = require('../datastore/datastore');
 const datastore = ds.datastore;
 const router = express.Router();
 
+const { get_event } = require('../methods/get');
+const { post_event } = require('../methods/post');
+const { delete_event } = require('../methods/delete');
+
 const EVENT = 'EVENT';
 const JSON = 'application/json';
 
 router.use(bodyParser.json());
-
-function post_event(name, date) {
-    var key = datastore.key(EVENT);
-    const self_url = 'http://localhost:8080/calendar/' + key.id;
-    const data = {
-        "name": name,
-        "date": date,
-        "user_id": null,
-        "self": self_url
-    }
-
-    return datastore.save({
-        "key": key,
-        "data": data
-    }).then(() => { return key });
-}
-
-function get_event(id) {
-    const key = datastore.key([EVENT, parseInt(id, 10)]);
-    return datastore.get(key).then((event) => {
-        if (event[0] === undefined || event[0] === null) 
-            return event;
-        else
-            return event.map(ds.fromDatastore);
-    });
-}
-
-function delete_event(id) {
-    const key = datastore.key([EVENT, parseInt(id, 10)]);
-    return datastore.delete(key);
-}
 
 router.post('/', (req, res) => {
     if (req.get('content-type') !== JSON)

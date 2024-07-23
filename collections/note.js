@@ -4,41 +4,14 @@ const ds = require('../datastore/datastore');
 const datastore = ds.datastore;
 const router = express.Router();
 
+const { get_note } = require('../methods/get');
+const { post_note } = require('../methods/post');
+const { delete_note } = require('../methods/delete');
+
 const NOTE = 'NOTE';
 const JSON = 'application/json';
 
 router.use(bodyParser.json());
-
-function post_note(title, content) {
-    var key = datastore.key(NOTE);
-    const self_url = 'http://localhost:8080/note/' + key.id;
-    const data = {
-        "title": title,
-        "content": content,
-        "user_id": null,
-        "self": self_url
-    }
-
-    return datastore.save({
-        "key": key,
-        "data": data
-    }).then(() => { return key });
-}
-
-function get_note(id) {
-    const key = datastore.key([NOTE, parseInt(id, 10)]);
-    return datastore.get(key).then((note) => {
-        if (note[0] === undefined || note[0] === null)
-            return note;
-        else
-            return note.map(ds.fromDatastore);
-    });
-}
-
-function delete_note(id) {
-    const key = datastore.key([NOTE, parseInt(id, 10)]);
-    return datastore.delete(key);
-}
 
 router.post('/', (req, res) => {
     if (req.get('content-type') !== JSON)

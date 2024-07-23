@@ -4,41 +4,14 @@ const ds = require('../datastore/datastore');
 const datastore = ds.datastore;
 const router = express.Router();
 
+const { get_todo } = require('../methods/get');
+const { post_todo } = require('../methods/post');
+const { delete_todo } = require('../methods/delete');
+
 const TODO = 'TODO';
 const JSON = 'application/json';
 
 router.use(bodyParser.json());
-
-function post_todo(name, content) {
-    var key = datastore.key(TODO);
-    const self_url = 'http://localhost:8080/todo/' + key.id;
-    const data = {
-        'name': name,
-        'content': content,
-        'user_id': null,
-        'self': self_url
-    }
-
-    return datastore.save({
-        'key': key,
-        'data': data
-    }).then(() => { return key });
-}
-
-function get_todo(id) {
-    const key = datastore.key([TODO, parseInt(id, 10)]);
-    return datastore.get(key).then((todo) => {
-        if (todo[0] === undefined || todo[0] === null)
-            return todo
-        else
-            return todo.map(ds.fromDatastore);
-    });
-}
-
-function delete_todo(id) {
-    const key = datastore.key([TODO, parseInt(id, 10)]);
-    return datastore.delete(key);
-}
 
 router.post('/', (req, res) => {
     if (req.get('content-type') !== JSON)

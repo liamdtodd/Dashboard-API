@@ -4,6 +4,10 @@ const ds = require('../datastore/datastore');
 const datastore = ds.datastore;
 const router = express.Router();
 
+const { get_event, get_note, get_todo, get_user } = require('../methods/get');
+const { post_user } = require('../methods/post');
+const { delete_user } = require('../methods/delete');
+
 const USER = 'USER';
 const EVENT = 'EVENT';
 const TODO = 'TODO';
@@ -11,34 +15,6 @@ const NOTE = 'NOTE';
 const JSON = 'application/json';
 
 router.use(bodyParser.json());
-
-function post_user(name, email) {
-    var key = datastore.key(USER);
-    const self_url = 'http://localhost:8080/user/' + key.id;
-    const data = {
-        'name': name,
-        'email': email,
-        'events': [],
-        'todos': [],
-        'notes': [],
-        'self': self_url
-    }
-
-    return datastore.save({
-        'key': key,
-        'data': data
-    }).then(() => { return key });
-}
-
-function get_user(id) {
-    const key = datastore.key([USER, parseInt(id, 10)]);
-    return datastore.get(key).then((user) => {
-        if (user[0] === undefined || user[0] === null)
-            return user
-        else
-            return user.map(ds.fromDatastore);
-    });
-}
 
 function patch_user_event(uid, eid, user, event) {
     const key = datastore.key([USER, parseInt(uid, 10)]);
@@ -97,16 +73,6 @@ function patch_user_todo(uid, tid, user, todo) {
     return datastore.save({ 'key': key, 'data': updated_user });
 }
 
-function get_event(id) {
-    const key = datastore.key([EVENT, parseInt(id, 10)]);
-    return datastore.get(key).then((event) => {
-        if (event[0] === undefined || event[0] === null) 
-            return event;
-        else
-            return event.map(ds.fromDatastore);
-    });
-}
-
 function patch_event(uid, eid, event) {
     const key = datastore.key([EVENT, parseInt(eid, 10)]);
 
@@ -117,16 +83,6 @@ function patch_event(uid, eid, event) {
         'self': event.self
     }
     return datastore.save({ 'key': key, 'data': updated_event })
-}
-
-function get_note(id) {
-    const key = datastore.key([NOTE, parseInt(id, 10)]);
-    return datastore.get(key).then((note) => {
-        if (note[0] === undefined || note[0] === null)
-            return note;
-        else
-            return note.map(ds.fromDatastore);
-    });
 }
 
 function patch_note(uid, nid, note) {
@@ -141,31 +97,16 @@ function patch_note(uid, nid, note) {
     return datastore.save({ 'key': key, 'data': updated_note });
 }
 
-function get_todo(id) {
-    const key = datastore.key([TODO, parseInt(id, 10)]);
-    return datastore.get(key).then((todo) => {
-        if (todo[0] === undefined || todo[0] === null)
-            return todo
-        else
-            return todo.map(ds.fromDatastore);
-    });
-}
-
 function patch_todo(uid, tid, todo) {
     const key = datastore.key([TODO, parseInt(tid, 10)]);
     
     const updated_todo = {
-        'title': todo.title,
+        'name': todo.name,
         'content': todo.content,
         'user_id': uid,
         'self': todo.self
     }
     return datastore.save({ 'key': key, 'data': updated_todo });
-}
-
-function delete_user(id) {
-    const key = datastore.key([USER, parseInt(id, 10)]);
-    return datastore.delete(key);
 }
 
 router.post('/', (req, res) => {
