@@ -7,6 +7,7 @@ const { post_user } = require('../methods/post');
 const { delete_user } = require('../methods/delete');
 const { patch_user_event, patch_user_note, patch_user_todo } = require('../methods/user/patch');
 const { delete_user_event, delete_user_note, delete_user_todo } = require('../methods/user/delete');
+const { put_user } = require('../methods/put');
 
 const JSON = 'application/json';
 
@@ -57,6 +58,34 @@ router.get('/:id', (req, res) => {
                 }
             }
         });
+});
+
+router.put('/:id', (req, res) => {
+    if (req.get('content-type') !== JSON)
+        res.status(415).json({ 'Error': 'Server only accepts application/json data' });
+    else {
+        get_user(req.params.id)
+            .then(user => {
+                if (user[0] === undefined || user[0] === null)
+                    res.status(404).json({ 'Error': 'No user with this user ID exists' });
+                else {
+                    if (req.body.name && req.body.email) {
+                        put_user(req.params.id, user[0], req.body.name, req.body.email)
+                        res.status(200).json({
+                            'id': req.params.id,
+                            'name': req.body.name,
+                            'email': req.body.email,
+                            'events': user[0].events,
+                            'notes': user[0].notes,
+                            'todos': user[0].todos,
+                            'self': req.protocol + '://' + req.get('host') + '/user/' + req.params.id
+                        });
+                    }
+                    else
+                        res.status(400).json({ 'Error': 'Missing or incomplete field(s) in request body' });
+                }
+            });
+    }
 });
 
 router.patch('/:uid/calendar/:eid', (req, res) => {

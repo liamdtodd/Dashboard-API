@@ -5,6 +5,7 @@ const router = express.Router();
 const { get_note } = require('../methods/get');
 const { post_note } = require('../methods/post');
 const { delete_note } = require('../methods/delete');
+const { put_note } = require('../methods/put');
 
 const JSON = 'application/json';
 
@@ -52,6 +53,32 @@ router.get('/:id', (req, res) => {
             }
         });
 });
+
+router.put('/:id', (req, res) => {
+    if (req.get('content-type') !== JSON)
+        res.status(415).json({ 'Error': 'Server only accepts application/json data' });
+    else {
+        get_note(req.params.id)
+            .then(note => {
+                if (note[0] === undefined || note[0] === null)
+                    res.status(404).json({ 'Error': 'No note wit this note ID exists' });
+                else {
+                    if (req.body.title && req.body.content) {
+                        put_note(req.params.id, note[0], req.body.title, req.body.content)
+                        res.status(200).json({
+                            'id': req.params.id,
+                            'title': req.body.title,
+                            'content': req.body.content,
+                            'user_id': note[0].user_id,
+                            'self': req.protocol + '://' + req.get('host') + '/note/' + req.params.id
+                        });
+                    }
+                    else
+                        res.status(400).json({ 'Error': 'Missing or incomplete field(s) in request body' });
+                }
+            })
+    }
+})
 
 router.delete('/:id', (req, res) => {
     get_note(req.params.id)

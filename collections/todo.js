@@ -5,6 +5,7 @@ const router = express.Router();
 const { get_todo } = require('../methods/get');
 const { post_todo } = require('../methods/post');
 const { delete_todo } = require('../methods/delete');
+const { put_todo } = require('../methods/put');
 
 const JSON = 'application/json';
 
@@ -51,6 +52,31 @@ router.get('/:id', (req, res) => {
                 }
             }
         });
+});
+
+router.put('/:id', (req, res) => {
+    if (req.get('content-type') !== JSON)
+        res.status(415).json({ 'Error': 'Server only accepts application/json data' });
+    else {
+        get_todo(req.params.id)
+            .then(todo => {
+                if (todo[0] === undefined || todo[0] === null)
+                    res.status(404).json({ 'Error': 'No todo with that todo ID exists' });
+                else {
+                    if (req.body.name && req.body.content) {
+                        put_todo(req.params.id, todo[0], req.body.name, req.body.content);
+                        res.status(200).json({
+                            'id': req.params.id,
+                            'name': req.body.name,
+                            'content': req.body.content,
+                            'self': req.protocol + '://' + req.get('host') + '/todo/' + req.params.id
+                        });
+                    }
+                    else
+                        res.status(400).json({ 'Error': 'Missing or incomplete field(s) in request body' });
+                }
+            });
+    }
 });
 
 router.delete('/:id', (req, res) => {
