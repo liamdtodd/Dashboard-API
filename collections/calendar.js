@@ -6,6 +6,7 @@ const { get_event } = require('../methods/get');
 const { post_event } = require('../methods/post');
 const { delete_event } = require('../methods/delete');
 const { put_event } = require('../methods/put');
+const { patch_event_name, patch_event_date } = require('../methods/patch');
 
 const JSON = 'application/json';
 
@@ -75,6 +76,41 @@ router.put('/:id', (req, res) => {
                     }
                     else
                         res.status(400).json({ 'Error': 'Missing or incomplete field(s) in request body' });
+                }
+            });
+    }
+});
+
+router.patch('/:id', (req, res) => {
+    if (req.get('content-type') !== JSON)
+        res.status(415).json({ 'Error': 'Server only accepts application/json data' });
+    else {
+        get_event(req.params.id)
+            .then(event => {
+                if (event[0] === undefined || event[0] === null)
+                    res.status(404).json({ 'Error': 'The event with this event ID does not exist' });
+                else {
+                    if (req.body.name) {
+                        patch_event_name(req.params.id, event[0], req.body.name);
+                        res.status(200).json({
+                            'id': req.params.id,
+                            'name': req.body.name,
+                            'date': event[0].date,
+                            'user_id': event[0].user_id,
+                            'self': req.protocol + '://' + req.get('host') + '/calendar/' + req.params.id
+                        });
+                    } else if (req.body.date) {
+                        patch_event_date(req.params.id, event[0], req.body.date);
+                        res.status(200).json({
+                            'id': req.params.id,
+                            'name': event[0].name,
+                            'date': req.body.date,
+                            'user_id': event[0].user_id,
+                            'self': req.protocol + '://' + req.get('host') + '/calendar/' + req.params.id
+                        });
+                    } else {
+                        res.status(400).json({ 'Error': 'Incorrect field in request body' });
+                    }
                 }
             });
     }
