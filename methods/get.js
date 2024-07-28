@@ -16,6 +16,31 @@ module.exports.get_user = function get_user(id) {
     });
 }
 
+module.exports.get_users = function get_users() {
+    const query = datastore.createQuery(USER);
+    return datastore.runQuery(query).then((users) => {
+        return users[0].map(ds.fromDatastore);
+    });
+}
+
+module.exports.create_user = function create_user(data) {
+    var key = datastore.key(USER);
+    const self_url = 'http://localhost:8080/user/' + key.id;
+    const new_user = {
+        'name': data.nickname, 
+        'email': data.email,
+        'sub': data.sub,
+        'events': [],
+        'notes': [],
+        'todos': [],
+        'self': self_url
+    }
+
+    console.log('user: ', new_user);
+
+    return datastore.save({'key': key, 'data': new_user });
+}
+
 module.exports.get_event = function get_event(id) {
     const key = datastore.key([EVENT, parseInt(id, 10)]);
     return datastore.get(key).then((event) => {
