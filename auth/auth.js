@@ -2,24 +2,11 @@ const express = require('express');
 const router = express.Router();
 const bodyParser = require('body-parser');
 const { auth, requiresAuth } = require('express-openid-connect');
-var { expressjwt: jwt } = require('express-jwt');
-const jwksRsa = require('jwks-rsa');
 
 const DOMAIN = 'dev-k4eada1shnbn14a6.us.auth0.com';
 const CLIENT_ID = 'oFOh5R7lpQsijvT8SbnLLI06rc2KCjze';
 const { CLIENT_SECRET } = require('../client_secret');
-
-module.exports.checkJwt = jwt({
-    secret: jwksRsa.expressJwtSecret({
-        cache: true,
-        rateLimit: true,
-        jwksRequestsPerMinute: 5,
-        jwksUri: 'https://dev-k4eada1shnbn14a6.us.auth0.com/.well-known/jwks.json'
-    }),
-
-    issuer: 'https://dev-k4eada1shnbn14a6.us.auth0.com/',
-    algorithms: ['RS256']
-});
+const { get_users, create_user } = require('../methods/get');
 
 const config = {
     authRequired: false,
@@ -38,8 +25,27 @@ router.get('/', (req, res) => {
 });
 
 router.get('/profile', requiresAuth(), (req, res) => {
-    //TODO: configure this route for creating users
-    res.send(JSON.stringify(req.oidc.user));
+    let unique = true;
+    const users = get_users()
+        .then((users) => {
+            for (var x = 0; x < users.length; x++) {
+                if (users[x].sub == req.oidc.user.sub)
+                    unique = false;
+            }
+
+            if (unique === true) {
+                create_user(req.oidc.user);
+                res.status(201).json({
+                    'JWT': req.oidc.idToken,
+                    'sub': req.oidc.user.sub
+                });
+            } else
+                res.status(200).json({
+                    'JWT': req.oidc.idToken,
+                    'sub': req.oidc.user.sub
+                });
+        });
+    //res.send(JSON.stringify(req.oidc.user));
 });
 
 router.post('/login', (req, res) => {
@@ -61,11 +67,12 @@ router.post('/login', (req, res) => {
         json: true
     };
 
-    request(options, (err, res, body) => {
-        if (err)
+    request(options, (err, response, body) => {
+        if (err) {
             res.status(500).send(err);
-        else
+        }else {
             res.send(body);
+        }
     });
 });
 
