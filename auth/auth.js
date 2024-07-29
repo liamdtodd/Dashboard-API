@@ -45,7 +45,6 @@ router.get('/profile', requiresAuth(), (req, res) => {
                     'sub': req.oidc.user.sub
                 });
         });
-    //res.send(JSON.stringify(req.oidc.user));
 });
 
 router.post('/login', (req, res) => {
