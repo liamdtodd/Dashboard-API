@@ -1,0 +1,1615 @@
+{
+	"info": {
+		"_postman_id": "2d9c252e-04f3-4862-8bfd-1de530156d29",
+		"name": "Dashboard API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30169363"
+	},
+	"item": [
+		{
+			"name": "Create Calendar Event 201",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set('calendar_id', pm.response.json()['id']);\r",
+							"    pm.environment.set('calendar_name', pm.response.json()['name']);\r",
+							"    pm.environment.set('calendar_date', pm.response.json()['date']);\r",
+							"\r",
+							"    pm.test('201 status', function () {\r",
+							"        pm.response.to.have.status(201);\r",
+							"    });\r",
+							"\r",
+							"    var req_name = JSON.parse(pm.request.body.raw).name;\r",
+							"    var req_date = JSON.parse(pm.request.body.raw).date;\r",
+							"\r",
+							"    pm.test('valid response', function() {\r",
+							"        pm.expect(req_name).to.equal(pm.environment.get('calendar_name'));\r",
+							"        pm.expect(req_date).to.equal(pm.environment.get('calendar_date'));\r",
+							"    });\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{user_jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"POST test\",\r\n    \"date\": \"July 19, 2024\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/calendar",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"calendar"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Calendar Event 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('200 status', function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test('valid response', function () {\r",
+							"    pm.expect(pm.environment.get('calendar_name')).to.equal(pm.response.json()['name']);\r",
+							"    pm.expect(pm.environment.get('calendar_date')).to.equal(pm.response.json()['date']);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/calendar/{{calendar_id}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"calendar",
+						"{{calendar_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Calendar Event 204",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('204 status', function() {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});\r",
+							"\r",
+							"pm.environment.set('calendar_id', '');\r",
+							"pm.environment.set('calendar_name', '');\r",
+							"pm.environment.set('calendar_date', '');\r",
+							"pm.environment.set('calendar_uid', '');"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/calendar/{{calendar_id}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"calendar",
+						"{{calendar_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create User 201",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set('user_id', pm.response.json()['id']);\r",
+							"pm.environment.set('user_name', pm.response.json()['name']);\r",
+							"pm.environment.set('user_email', pm.response.json()['email']);\r",
+							"pm.environment.set('user_events', pm.response.json()['events']);\r",
+							"pm.environment.set('user_todos', pm.response.json()['todos']);\r",
+							"pm.environment.set('user_notes', pm.response.json()['notes']);\r",
+							"\r",
+							"pm.test('201 status', function() {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"var req_name = JSON.parse(pm.request.body.raw).name;\r",
+							"var req_email = JSON.parse(pm.request.body.raw).email;\r",
+							"\r",
+							"pm.test('valid response', function() {\r",
+							"    pm.expect(req_name).to.equal(pm.response.json()['name']);\r",
+							"    pm.expect(req_email).to.equal(pm.response.json()['email']);\r",
+							"})\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Liam Todd\",\r\n    \"email\": \"liamd.todd5@gmail.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/user",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('200 status', function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test('valid response', function() {\r",
+							"    const responseBody = pm.response.json();\r",
+							"    pm.expect(pm.environment.get('user_name')).to.equal(responseBody['name']);\r",
+							"    pm.expect(pm.environment.get('user_email')).to.equal(responseBody['email']);\r",
+							"    pm.expect(pm.environment.get('user_events')).to.eql(responseBody['events']);\r",
+							"    pm.expect(pm.environment.get('user_todos')).to.eql(responseBody['todos']);\r",
+							"    pm.expect(pm.environment.get('user_notes')).to.eql(responseBody['notes']);\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{user_jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/user/{{user_id}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user",
+						"{{user_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete User 204",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('204 status', function() {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{user_jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/user/{{user_id}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user",
+						"{{user_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Note 201",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set('note_id', pm.response.json()['id']);\r",
+							"pm.environment.set('note_title', pm.response.json()['title']);\r",
+							"pm.environment.set('note_content', pm.response.json()['content']);\r",
+							"\r",
+							"pm.test('201 status', function() {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"var req_title = JSON.parse(pm.request.body.raw).title;\r",
+							"var req_content = JSON.parse(pm.request.body.raw).content;\r",
+							"\r",
+							"pm.test('valid response', function() {\r",
+							"    pm.expect(req_title).to.equal(pm.response.json()['title']);\r",
+							"    pm.expect(req_content).to.equal(pm.response.json()['content']);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"API Specs\",\r\n    \"content\": \"change API endpoints for authentication via user\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/note",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"note"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Note 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('200 status code', function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test('valid response', function() {\r",
+							"    pm.expect(pm.environment.get('note_title')).to.equal(pm.response.json()['title']);\r",
+							"    pm.expect(pm.environment.get('note_content')).to.equal(pm.response.json()['content']);\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/note/{{note_id}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"note",
+						"{{note_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Note 204",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('204 status', function() {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/note/{{note_id}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"note",
+						"{{note_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Todo 201",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set('todo_id', pm.response.json()['id']);\r",
+							"pm.environment.set('todo_name', pm.response.json()['name']);\r",
+							"pm.environment.set('todo_content', pm.response.json()['content']);\r",
+							"pm.environment.set('todo_uid', pm.response.json()['user_id']);\r",
+							"\r",
+							"pm.test('201 status', function() {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"var req_name = JSON.parse(pm.request.body.raw).name;\r",
+							"var req_content = JSON.parse(pm.request.body.raw).content;\r",
+							"\r",
+							"pm.test('valid response', function() {\r",
+							"    pm.expect(req_name).to.equal(pm.response.json()['name']);\r",
+							"    pm.expect(req_content).to.equal(pm.response.json()['content']);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"uid issue\",\r\n    \"content\": \"get rid of auto uid on non-user entities\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/todo",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Todo 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('200 status', function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test('valid response', function() {\r",
+							"    pm.expect(pm.environment.get('todo_name')).to.equal(pm.response.json()['name']);\r",
+							"    pm.expect(pm.environment.get('todo_content')).to.equal(pm.response.json()['content']);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/todo/{{todo_id}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todo",
+						"{{todo_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Todo 204",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('204 status', function() {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/todo/{{todo_id}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todo",
+						"{{todo_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Add Event 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set('user_events', pm.response.json()['events']);\r",
+							"\r",
+							"pm.test('200 status', function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{user_jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/user/{{user_id}}/calendar/{{calendar_id}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user",
+						"{{user_id}}",
+						"calendar",
+						"{{calendar_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Add Note 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set('user_notes', pm.response.json()['notes']);\r",
+							"\r",
+							"pm.test('200 status', function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{user_jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/user/{{user_id}}/note/{{note_id}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user",
+						"{{user_id}}",
+						"note",
+						"{{note_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Add Todo 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set('user_todos', pm.response.json()['todos']);\r",
+							"\r",
+							"pm.test('200 status', function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{user_jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/user/{{user_id}}/todo/{{todo_id}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user",
+						"{{user_id}}",
+						"todo",
+						"{{todo_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Remove Event 204",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('200 status code', function() {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{user_jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/user/{{user_id}}/calendar/{{calendar_id}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user",
+						"{{user_id}}",
+						"calendar",
+						"{{calendar_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Remove Note 204",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('200 status', function() {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{user_jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/user/{{user_id}}/note/{{note_id}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user",
+						"{{user_id}}",
+						"note",
+						"{{note_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Remove Todo 204",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('200 status', function() {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{user_jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/user/{{user_id}}/todo/{{todo_id}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user",
+						"{{user_id}}",
+						"todo",
+						"{{todo_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update User 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set('user_name', pm.response.json()['name']);\r",
+							"pm.environment.set('user_email', pm.response.json()['email']);\r",
+							"\r",
+							"pm.test('200 status', function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var req_name = JSON.parse(pm.request.body.raw).name;\r",
+							"var req_email = JSON.parse(pm.request.body.raw).email;\r",
+							"\r",
+							"pm.test('valid response', function() {\r",
+							"    pm.expect(req_name).to.equal(pm.environment.get('user_name'));\r",
+							"    pm.expect(req_email).to.equal(pm.environment.get('user_email'));\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{user_jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Brother Liam\",\r\n    \"email\": \"updated@version.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/user/{{user_id}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user",
+						"{{user_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Event 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set('calendar_name', pm.response.json()['name']);\r",
+							"pm.environment.set('calendar_date', pm.response.json()['date']);\r",
+							"\r",
+							"pm.test('200 status', function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var req_name = JSON.parse(pm.request.body.raw).name;\r",
+							"var req_date = JSON.parse(pm.request.body.raw).date;\r",
+							"\r",
+							"pm.test('valid response', function() {\r",
+							"    pm.expect(req_name).to.equal(pm.environment.get('calendar_name'));\r",
+							"    pm.expect(req_date).to.equal(pm.environment.get('calendar_date'));\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Updated Name\",\r\n    \"date\": \"July 23, 2024\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/calendar/{{calendar_id}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"calendar",
+						"{{calendar_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Note 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set('note_title', pm.response.json()['title']);\r",
+							"pm.environment.set('note_content', pm.response.json()['content']);\r",
+							"\r",
+							"pm.test('200 status', function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var req_title = JSON.parse(pm.request.body.raw).title;\r",
+							"var req_content = JSON.parse(pm.request.body.raw).content;\r",
+							"\r",
+							"pm.test('valid response', function() {\r",
+							"    pm.expect(req_title).to.equal(pm.environment.get('note_title'));\r",
+							"    pm.expect(req_content).to.equal(pm.environment.get('note_content'));\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"Updated Title\",\r\n    \"content\": \"Revised solutions\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/note/{{note_id}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"note",
+						"{{note_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Todo 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set('todo_name', pm.response.json()['name']);\r",
+							"pm.environment.set('todo_content', pm.response.json()['content']);\r",
+							"\r",
+							"pm.test('200 status', function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var req_name = JSON.parse(pm.request.body.raw).name;\r",
+							"var req_content = JSON.parse(pm.request.body.raw).content;\r",
+							"\r",
+							"pm.test('valid response', function() {\r",
+							"    pm.expect(req_name).to.equal(pm.environment.get('todo_name'));\r",
+							"    pm.expect(req_content).to.equal(pm.environment.get('todo_content'));\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Updated Todo name\",\r\n    \"content\": \"todo updated/completed\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/todo/{{todo_id}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todo",
+						"{{todo_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Update Name 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set('user_name', pm.response.json()['name']);\r",
+							"\r",
+							"pm.test('200 status', function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var req_name = JSON.parse(pm.request.body.raw).name;\r",
+							"\r",
+							"pm.test('valid response', function() {\r",
+							"    pm.expect(req_name).to.equal(pm.environment.get('user_name'));\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{user_jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"BLT\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/user/{{user_id}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user",
+						"{{user_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Update Email 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set('user_email', pm.response.json()['email']);\r",
+							"\r",
+							"pm.test('200 status', function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var req_email = JSON.parse(pm.request.body.raw).email;\r",
+							"\r",
+							"pm.test('valid response', function() {\r",
+							"    pm.expect(req_email).to.equal(pm.environment.get('user_email'));\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{user_jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"updated@email.org\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/user/{{user_id}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user",
+						"{{user_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Event Update Name 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set('calendar_name', pm.response.json()['name']);\r",
+							"\r",
+							"pm.test('200 status', function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var req_name = JSON.parse(pm.request.body.raw).name;\r",
+							"\r",
+							"pm.test('valid response', function() {\r",
+							"    pm.expect(req_name).to.equal(pm.environment.get('calendar_name'));\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Updated Event Name\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/calendar/{{calendar_id}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"calendar",
+						"{{calendar_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Event Update Date 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set('calendar_date', pm.response.json()['date']);\r",
+							"\r",
+							"pm.test('200 status', function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var req_date = JSON.parse(pm.request.body.raw).date;\r",
+							"\r",
+							"pm.test('valid response', function() {\r",
+							"    pm.expect(req_date).to.equal(pm.environment.get('calendar_date'));\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"date\": \"August 2, 2024\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/calendar/{{calendar_id}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"calendar",
+						"{{calendar_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Note Update Title 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set('note_title', pm.response.json()['title']);\r",
+							"\r",
+							"pm.test('200 status', function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var req_title = JSON.parse(pm.request.body.raw).title;\r",
+							"\r",
+							"pm.test('valid response', function() {\r",
+							"    pm.expect(req_title).to.equal(pm.environment.get('note_title'));\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"Updated Note Title\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/note/{{note_id}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"note",
+						"{{note_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Note Update Content 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set('note_content', pm.response.json()['content']);\r",
+							"\r",
+							"pm.test('200 status', function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var req_content = JSON.parse(pm.request.body.raw).content;\r",
+							"\r",
+							"pm.test('valid response', function() {\r",
+							"    pm.expect(req_content).to.equal(pm.environment.get('note_content'));\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"content\": \"Finishing up some basic patch work\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/note/{{note_id}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"note",
+						"{{note_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Todo Update Name 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set('todo_name', pm.response.json()['name']);\r",
+							"\r",
+							"pm.test('200 status', function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var req_name = JSON.parse(pm.request.body.raw).name;\r",
+							"\r",
+							"pm.test('valid response', function() {\r",
+							"    pm.expect(req_name).to.equal(pm.environment.get('todo_name'));\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Updated Todo Name\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/todo/{{todo_id}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todo",
+						"{{todo_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Todo Update Content 200",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set('todo_content', pm.response.json()['content']);\r",
+							"\r",
+							"pm.test('200 status', function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var req_content = JSON.parse(pm.request.body.raw).content;\r",
+							"\r",
+							"pm.test('valid response', function() {\r",
+							"    pm.expect(req_content).to.equal(pm.environment.get('todo_content'));\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"content\": \"This todo has been updated\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/todo/{{todo_id}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"todo",
+						"{{todo_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User JWT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set('user_jwt', pm.response.json()['id_token']);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"grant_type\": \"password\",\r\n    \"username\": \"second@second.com\",\r\n    \"password\": \"Hello123!\",\r\n    \"client_id\": \"oFOh5R7lpQsijvT8SbnLLI06rc2KCjze\",\r\n    \"client_secret\":\"brc7C5KEfn27qo1z-QwxyraOxm5ig54eASq8R9xhq_EtW865ZDVFguWmH6CBS29N\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://dev-k4eada1shnbn14a6.us.auth0.com/oauth/token",
+					"protocol": "https",
+					"host": [
+						"dev-k4eada1shnbn14a6",
+						"us",
+						"auth0",
+						"com"
+					],
+					"path": [
+						"oauth",
+						"token"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

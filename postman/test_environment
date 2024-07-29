@@ -1,0 +1,129 @@
+{
+	"id": "47aab245-522c-4228-8f03-9686b9601873",
+	"name": "Dashboard API",
+	"values": [
+		{
+			"key": "calendar_id",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "url",
+			"value": "http://localhost:8080",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "calendar_name",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "calendar_date",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "calendar_uid",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "user_id",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "user_name",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "user_email",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "user_events",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "user_todos",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "user_notes",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "note_title",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "note_content",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "note_uid",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "note_id",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "todo_id",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "todo_name",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "todo_content",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "todo_uid",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "user_jwt",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2024-07-29T03:57:53.153Z",
+	"_postman_exported_using": "Postman/11.5.1"
+}
