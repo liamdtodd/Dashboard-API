@@ -1,7 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-var { expressjwt: jwt } = require('express-jwt');
-const jwksRsa = require('jwks-rsa');
+const checkJwt = require('../auth/jwt');
 const router = express.Router();
 
 const { get_event, get_note, get_todo, get_user } = require('../methods/get');
@@ -15,18 +14,7 @@ const { patch_user_name, patch_user_email } = require('../methods/patch');
 const JSON = 'application/json';
 
 router.use(bodyParser.json());
-
-const checkJwt = jwt({
-    secret: jwksRsa.expressJwtSecret({
-        cache: true,
-        rateLimit: true,
-        jwksRequestsPerMinute: 5,
-        jwksUri: 'https://dev-k4eada1shnbn14a6.us.auth0.com/.well-known/jwks.json'
-    }),
-
-    issuer: 'https://dev-k4eada1shnbn14a6.us.auth0.com/',
-    algorithms: ['RS256']
-});
+router.use(checkJwt);
 
 router.post('/', (req, res) => {
     if (req.get('content-type') !== JSON)
@@ -51,7 +39,7 @@ router.post('/', (req, res) => {
     }
 });
 
-router.get('/:id', checkJwt, (req, res) => {
+router.get('/:id', (req, res) => {
     get_user(req.params.id)
         .then(user => {
             if (user[0] === undefined || user[0] === null)
